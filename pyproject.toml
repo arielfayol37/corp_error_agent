@@ -1,25 +1,32 @@
 [project]
-name = "corp_error_agent"
-version = "0.2.0"
-description = "Runtime agent that captures uncaught errors + env snapshot and prints data-driven CLI hints."
-authors = [{name = "Fayol Ateufack"}]
-readme = "README.md"
+name            = "corp_error_agent"
+version         = "0.2.1"                           # ← bump for wheel that ships the alias
+description     = "Runtime agent that captures uncaught errors + env snapshot and prints data‑driven CLI hints."
+authors         = [{ name = "Fayol Ateufack" }]
+readme          = "README.md"
 requires-python = ">=3.8"
 
 dependencies = [
-  "requests>=2.31",
-  "platformdirs>=3.10",
+    "requests>=2.31",
+    "platformdirs>=3.10",
 ]
 
 [project.scripts]
 corp-error-agent = "corp_error_agent.cli:main"
 
+# -------------------------------------------------------------------
+# Build backend: setuptools + wheel
+# -------------------------------------------------------------------
 [build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+requires      = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
 
-[tool.setuptools]                
-py-modules = ["sitecustomize"]   
+# -------------------------------------------------------------------
+# Setuptools configuration
+# -------------------------------------------------------------------
+[tool.setuptools]
+py-modules = ["sitecustomize"]              # ships the top‑level import shim
 
-[tool.setuptools.packages.find]  
+# package discovery – keep your main package exactly as before
+[tool.setuptools.packages.find]
 where = ["corp_error_agent"]
