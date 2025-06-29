@@ -17,3 +17,9 @@ corp-error-agent = "corp_error_agent.cli:main"
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[tool.setuptools]                
+py-modules = ["sitecustomize"]   
+
+[tool.setuptools.packages.find]  
+where = ["corp_error_agent"]
