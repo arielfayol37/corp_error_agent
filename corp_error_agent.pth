@@ -1,1 +1,1 @@
-import importlib; importlib.import_module('corp_error_agent.sitecustomize')
+import importlib, importlib.util; spec = importlib.util.find_spec('corp_error_agent.sitecustomize'); importlib.import_module('corp_error_agent.sitecustomize') if spec else None
