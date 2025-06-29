@@ -1,6 +1,6 @@
 [project]
 name            = "corp_error_agent"
-version         = "0.2.1"                           # ← bump for wheel that ships the alias
+version         = "0.2.2"                           # ← bump for wheel that ships the alias
 description     = "Runtime agent that captures uncaught errors + env snapshot and prints data‑driven CLI hints."
 authors         = [{ name = "Fayol Ateufack" }]
 readme          = "README.md"
