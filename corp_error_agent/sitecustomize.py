@@ -113,7 +113,7 @@ ARCH = _get_uname_m()
 ENV_HASH, PKG_LIST = _snapshot_packages()
 SCRIPT_ID = _compute_script_id()
 SAFE_ENV = (
-    {k: os.environ[k] for k in ENV_ALLOW if k in os.environ}
+    {k: os.environ[k] if k in os.environ else "MISSING" for k in ENV_ALLOW}
     if os.getenv("ERROR_AGENT_ENV", "1") != "0"
     else {}
 )
