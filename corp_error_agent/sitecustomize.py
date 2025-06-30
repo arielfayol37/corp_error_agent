@@ -18,6 +18,7 @@ import threading
 import time
 import traceback
 import uuid
+import pydoc
 from importlib.metadata import distributions
 
 import requests
@@ -91,62 +92,27 @@ def _post_async(endpoint: str, payload: dict, timeout: int = 3) -> None:
 
     threading.Thread(target=_bg, daemon=False).start()  # daemon=True prevents hangs
 
+
 def _print_hint(h: dict):
+    # 1) If the backend sent us a fully formatted blob, page or print that directly
+    formatted = h.get("formatted") or h.get("formatted_text")
+    if formatted:
+        try:
+            pydoc.pager(formatted)
+        except ImportError:
+            sys.stderr.write(formatted + "\n")
+        return
+
+    # 2) Otherwise, fall back to the minimal hint
     bar = "─" * 72
-    lines: list[str] = []
+    sys.stderr.write(
+        f"\n{bar}\n"
+        f"💡 corp-error-agent:  {int(h.get('confidence', 0) * 100)} % similar runs:\n"
+        f"   {h.get('recommendation', '').strip()}\n"
+        f"   More: {h.get('docs', '')}\n"
+        f"{bar}\n"
+    )
 
-    # Header
-    lines.append(f"\n{bar}")
-    confidence = int(h.get("confidence", 0) * 100)
-    lines.append(f"💡 corp-error-agent:  {confidence}% match")
-    if docs := h.get("docs"):
-        lines.append(f"ℹ  {docs}")
-    lines.append(bar)
-
-    # Multi‑cluster summary
-    if clusters := h.get("cluster_info"):
-        lines.append(f"👥 Analyzed {h.get('clusters_analyzed', len(clusters))} cluster(s):")
-        for idx, c in enumerate(clusters, 1):
-            sim = int(c.get("similarity", 0) * 100)
-            cnt = c.get("error_count", "?")
-            fs  = c.get("first_seen", "unknown")
-            ls  = c.get("last_seen", "unknown")
-            sig = c.get("error_signature", "").strip()
-            lines.append(
-                f"  [{idx}] {sim}% similar • {cnt} errors • "
-                f"{fs} → {ls}\n"
-                f"       signature: {sig}"
-            )
-        lines.append(bar)
-
-    # All suggestions
-    if sugs := h.get("all_suggestions", []):
-        lines.append(f"🔧 Configuration suggestions ({len(sugs)} total):")
-        for i, sug in enumerate(sugs, 1):
-            text = sug.get("suggestion", "").strip()
-            key  = sug.get("config_key", "")
-            val  = sug.get("config_value", "")
-            pct  = sug.get("confidence_percentage", 0)
-            score= sug.get("significance_score", 0)
-            lines.append(
-                f"{i:2}. {text}\n"
-                f"       ➤ {key} = {val} "
-                f"(conf: {pct}%, score: {score})"
-            )
-    else:
-        # Fallback on the single primary recommendation
-        lines.append(f"🔧 {h.get('recommendation', '').strip()}")
-
-    lines.append(bar)
-    text = "\n".join(lines)
-
-    # Pager so you can scroll if it's longer than one screen
-    try:
-        import pydoc
-        pydoc.pager(text)
-    except ImportError:
-        # If pager isn't available, dump it all at once
-        sys.stderr.write(text + "\n")
 
 # ── Disable early if env says so ────────────────────────────────────────────
 if not ENABLED:

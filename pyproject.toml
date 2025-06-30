@@ -1,6 +1,6 @@
 [project]
 name            = "corp_error_agent"
-version         = "0.2.7"               # bump for the new safer install
+version         = "0.2.8"               # bump for the new safer install
 description     = "Runtime agent that captures uncaught errors + env snapshot and prints data‑driven CLI hints."
 authors         = [{ name = "Fayol Ateufack" }]
 readme          = "README.md"
