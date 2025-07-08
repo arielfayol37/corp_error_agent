@@ -25,7 +25,7 @@ for %%i in (0 1 2) do (
     REM 3) Upgrade pip and install requirements
     python -m pip install --upgrade pip
     python -m pip install -r "!REQ!"
-    python -m pip install git+https://github.com/arielfayol37/corp_error_agent.git@v0.2.8#egg=corp_error_agent
+    python -m pip install corp_error_agent
 
     REM 4) Run the test script three times
     echo Running !SCRIPT! three times …

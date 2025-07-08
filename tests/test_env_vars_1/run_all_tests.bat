@@ -22,7 +22,7 @@ for %%E in (env_A env_B env_C) do (
 
   python -m pip install --upgrade pip
   python -m pip install -r "%%E\requirements.txt"
-  python -m pip install git+https://github.com/arielfayol37/corp_error_agent.git@v0.2.8#egg=corp_error_agent
+  python -m pip install corp_error_agent
 
   call deactivate
   echo (dependencies installed for %%E)

@@ -5,3 +5,4 @@ dist/
 *.venv/
 .venv*/
 corp_error_agent.egg-info/
+.*venv/

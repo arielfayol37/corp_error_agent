@@ -22,10 +22,30 @@ import pydoc
 from importlib.metadata import distributions
 
 import requests
-from platformdirs import user_cache_dir
+from platformdirs import user_cache_dir, user_config_dir
 
 # ── Config knobs ────────────────────────────────────────────────────────────
-BACKEND = os.getenv("ERROR_AGENT_URL", "http://127.0.0.1:8000")
+
+def _get_backend_url():
+    # 1. Check environment variable
+    env_url = os.getenv("ERROR_AGENT_URL")
+    if env_url:
+        return env_url
+    # 2. Check config file
+    conf_path = pathlib.Path(user_config_dir("corp_error_agent")) / "config.json"
+    if conf_path.is_file():
+        try:
+            with conf_path.open() as f:
+                data = json.load(f)
+                url = data.get("backend_url")
+                if url:
+                    return url
+        except Exception:
+            pass
+    # 3. Default
+    return "http://127.0.0.1:8000"
+
+BACKEND = _get_backend_url()
 ENABLED = os.getenv("ERROR_AGENT_ENABLED", "1") == "1"
 HINTS_ENABLED = os.getenv("ERROR_AGENT_HINT", "1") == "1"
 CONF_THRESHOLD = 0.60  # min confidence to print hint
