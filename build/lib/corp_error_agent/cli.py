@@ -1,4 +1,3 @@
-# corp_error_agent/cli.py
 """corp_error_agent CLI – just a one-time helper for config management."""
 import click, json, pathlib, os
 from platformdirs import user_config_dir

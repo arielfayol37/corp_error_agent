@@ -1,4 +1,3 @@
-# corp_error_agent/sitecustomize.py
 """
 corp_error_agent.sitecustomize
 Auto‑imported by Python – hooks uncaught exceptions,
